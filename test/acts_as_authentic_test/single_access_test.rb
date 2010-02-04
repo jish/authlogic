@@ -11,7 +11,28 @@ module ActsAsAuthenticTest
       User.change_single_access_token_with_password false
       assert !User.change_single_access_token_with_password
     end
-    
+
+    def test_allow_blank_single_access_token_config
+      assert !User.allow_blank_single_access_token
+
+      User.allow_blank_single_access_token = true
+      assert User.allow_blank_single_access_token
+
+      User.allow_blank_single_access_token = false
+    end
+
+    def test_create_users_without_a_single_access_token
+      default_vaule = User.allow_blank_single_access_token
+      user = User.create
+      assert user.single_access_token
+
+      User.allow_blank_single_access_token = true
+      user = User.create
+      assert !user.single_access_token
+
+      User.allow_blank_single_access_token = default_vaule
+    end
+
     def test_validates_uniqueness_of_single_access_token
       u = User.new
       u.single_access_token = users(:ben).single_access_token

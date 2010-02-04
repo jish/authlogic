@@ -23,6 +23,17 @@ module Authlogic
           rw_config(:change_single_access_token_with_password, value, false)
         end
         alias_method :change_single_access_token_with_password=, :change_single_access_token_with_password
+
+        # Normally a single access token will be generated for every user.
+        # Enable this option if you wish users to be created without single_access_tokens.
+        #
+        # * <tt>Default:</tt> false
+        # * <tt>Accepts:</tt> Boolean
+        def allow_blank_single_access_token(value = nil)
+          rw_config(:allow_blank_single_access_token, value, false)
+        end
+        alias_method :allow_blank_single_access_token=, :allow_blank_single_access_token
+
       end
       
       # All method, for the single_access token aspect of acts_as_authentic.
@@ -52,7 +63,7 @@ module Authlogic
       
           protected
             def reset_single_access_token?
-              single_access_token.blank?
+              !self.class.allow_blank_single_access_token && single_access_token.blank?
             end
           
             def change_single_access_token_with_password?
